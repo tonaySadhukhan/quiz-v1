@@ -1,5 +1,5 @@
 const mongoose =require('mongoose');
-const mongoURL='mongodb://127.0.0.1:27017/demo';
+const mongoURL='mongodb+srv://user1:admin1234@quiz.ubwjo.mongodb.net/?retryWrites=true&w=majority&appName=Quiz';
 mongoose.connect(mongoURL);
 const db=mongoose.connection;
 
