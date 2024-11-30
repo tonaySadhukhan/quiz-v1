@@ -1,35 +1,18 @@
-const express=require('express');
-const db=require('./db2');
-const Questions=require('./models/people');
+require('dotenv').config();
+const mongoose =require('mongoose');
+const mongoURL=process.env.mongourl;
+mongoose.connect(process.env.mongourl);
+const db=mongoose.connection;
 
-
-const app=express();
-app.use(express.json());
-
-app.get('/',(req,res)=>{
-    res.send("Welcome to Quiz game")
-});
-app.get('/get-question',async (req,res)=>{
-        try{
-            const data=await Questions.find();
-            res.send(data);
-        }catch(error){
-            console.log(error);
-        }
+db.on('connected',()=>{
+    console.log("Connected to MongoDB server");
 });
 
-app.post('/set-question',async(req,res)=>{
-    try{
-        const data=req.body;
-        const newData=new Questions(data);
-        const response = await newData.save();
-        res.status(200).json(response);
-        console.log("data saved");
-    }catch(error){
-        console.log(error);
-    }
+db.on('error',(error)=>{
+    console.log(error);
 });
 
-app.listen(3500,()=>{
-    console.log("server starting at 3000");
+db.on('disconnected',()=>{
+    console.log("Disconnected");
 });
+module.exports=db;
