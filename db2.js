@@ -1,17 +1,35 @@
-const mongoose =require('mongoose');
-const mongoURL='mongodb+srv://user1:admin1234@quiz.ubwjo.mongodb.net/?retryWrites=true&w=majority&tls=true';
-mongoose.connect(mongoURL);
-const db=mongoose.connection;
+const express=require('express');
+const db=require('./db2');
+const Questions=require('./models/people');
 
-db.on('connected',()=>{
-    console.log("Connected to MongoDB server");
+
+const app=express();
+app.use(express.json());
+
+app.get('/',(req,res)=>{
+    res.send("Welcome to Quiz game")
+});
+app.get('/get-question',async (req,res)=>{
+        try{
+            const data=await Questions.find();
+            res.send(data);
+        }catch(error){
+            console.log(error);
+        }
 });
 
-db.on('error',(error)=>{
-    console.log(error);
+app.post('/set-question',async(req,res)=>{
+    try{
+        const data=req.body;
+        const newData=new Questions(data);
+        const response = await newData.save();
+        res.status(200).json(response);
+        console.log("data saved");
+    }catch(error){
+        console.log(error);
+    }
 });
 
-db.on('disconnected',()=>{
-    console.log("Disconnected");
+app.listen(3500,()=>{
+    console.log("server starting at 3000");
 });
-module.exports=db;
